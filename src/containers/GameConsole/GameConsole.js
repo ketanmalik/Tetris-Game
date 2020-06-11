@@ -1,15 +1,27 @@
 import React, { Component } from "react";
-import Board from "../../components/Board/Board";
 import classes from "./GameConsole.module.css";
 
 class GameConsole extends Component {
+  componentDidMount() {
+    this.draw();
+  }
+
+  draw = () => {
+    const context = this.refs.canvas.getContext("2d");
+    context.scale(20, 20);
+    context.fillStyle = "#000";
+    context.fillRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+  };
+
   render() {
-    const board = new Array(10).fill(<Board boardSize={10} />);
     return (
-      <div className={classes.Wrapper}>
-        <div className={classes.OuterPanel}>
-          <div className={classes.LeftPanel}>{board}</div>
-        </div>
+      <div className={classes.GameConsoleWrapper}>
+        <canvas
+          className={classes.Canvas}
+          ref="canvas"
+          width={240}
+          height={400}
+        />
       </div>
     );
   }
