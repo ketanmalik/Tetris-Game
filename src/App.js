@@ -1,13 +1,8 @@
 import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import GameConsole from "./containers/GameConsole/GameConsole";
 
 function App() {
-  return (
-    <div className="App">
-      <h1>Tetris Game</h1>
-    </div>
-  );
+  return <GameConsole />;
 }
 
 export default App;
