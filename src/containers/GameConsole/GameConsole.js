@@ -8,7 +8,7 @@ class GameConsole extends Component {
   constructor(props) {
     super(props);
     this.canvas = React.createRef();
-    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.keyPressHandler = this.keyPressHandler.bind(this);
     this.state = {
       player: {
         matrix: [
@@ -23,7 +23,7 @@ class GameConsole extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyPress);
+    document.addEventListener("keydown", this.keyPressHandler);
     const canvas = this.canvas.current;
     const context = canvas.getContext("2d");
     context.scale(20, 20);
@@ -31,7 +31,7 @@ class GameConsole extends Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyPress);
+    document.removeEventListener("keydown", this.keyPressHandler);
   }
 
   draw = () => {
@@ -58,10 +58,13 @@ class GameConsole extends Component {
     });
   };
 
-  handleKeyPress = (event) => {
+  keyPressHandler = (event) => {
     switch (event.keyCode) {
       case 37:
         this.playerMoveHandler(-1);
+        break;
+      case 38:
+        this.playerRotateHandler();
         break;
       case 39:
         this.playerMoveHandler(1);
@@ -83,6 +86,23 @@ class GameConsole extends Component {
   playerMoveHandler = (dir) => {
     let player = { ...this.state.player, pos: { ...this.state.player.pos } };
     player.pos.x += dir;
+    this.setState({ player: player });
+  };
+
+  playerRotateHandler = () => {
+    let player = {
+      ...this.state.player,
+      matrix: [...this.state.player.matrix],
+      pos: { ...this.state.player.pos },
+    };
+    let matrix = player.matrix;
+    for (let y = 0; y < matrix.length; ++y) {
+      for (let x = 0; x < y; ++x) {
+        [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+      }
+    }
+    matrix.forEach((row) => row.reverse());
+
     this.setState({ player: player });
   };
 
