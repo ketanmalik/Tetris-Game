@@ -1,16 +1,101 @@
 import React, { Component } from "react";
 import classes from "./GameConsole.module.css";
 
+let dropCounter = 0;
+let dropInterval = 1000;
+let lastTime = 0;
 class GameConsole extends Component {
+  constructor(props) {
+    super(props);
+    this.canvas = React.createRef();
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.state = {
+      player: {
+        matrix: [
+          [0, 0, 0],
+          [1, 1, 1],
+          [0, 1, 0],
+        ],
+        pos: { x: 5, y: 5 },
+      },
+      context: null,
+    };
+  }
+
   componentDidMount() {
-    this.draw();
+    document.addEventListener("keydown", this.handleKeyPress);
+    const canvas = this.canvas.current;
+    const context = canvas.getContext("2d");
+    context.scale(20, 20);
+    this.setState({ context: context }, this.updateConsoleHandler);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyPress);
   }
 
   draw = () => {
-    const context = this.refs.canvas.getContext("2d");
-    context.scale(20, 20);
+    const context = this.state.context;
     context.fillStyle = "#000";
-    context.fillRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+    context.fillRect(
+      0,
+      0,
+      this.canvas.current.width,
+      this.canvas.current.height
+    );
+    this.drawMatrix(this.state.player.matrix, this.state.player.pos);
+  };
+
+  drawMatrix = (matrix, offset) => {
+    const context = this.state.context;
+    matrix.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if (value !== 0) {
+          context.fillStyle = "#555";
+          context.fillRect(x + offset.x, y + offset.y, 1, 1);
+        }
+      });
+    });
+  };
+
+  handleKeyPress = (event) => {
+    switch (event.keyCode) {
+      case 37:
+        this.playerMoveHandler(-1);
+        break;
+      case 39:
+        this.playerMoveHandler(1);
+        break;
+      case 40:
+        this.playerDropHandler();
+        break;
+      default:
+        break;
+    }
+  };
+
+  playerDropHandler = () => {
+    let player = { ...this.state.player, pos: { ...this.state.player.pos } };
+    player.pos.y++;
+    this.setState({ player: player });
+  };
+
+  playerMoveHandler = (dir) => {
+    let player = { ...this.state.player, pos: { ...this.state.player.pos } };
+    player.pos.x += dir;
+    this.setState({ player: player });
+  };
+
+  updateConsoleHandler = (time = 0) => {
+    const deltaTime = time - lastTime;
+    dropCounter += deltaTime;
+    if (dropCounter > dropInterval) {
+      this.playerDropHandler();
+      dropCounter = 0;
+    }
+    lastTime = time;
+    this.draw();
+    requestAnimationFrame(this.updateConsoleHandler);
   };
 
   render() {
@@ -18,7 +103,7 @@ class GameConsole extends Component {
       <div className={classes.GameConsoleWrapper}>
         <canvas
           className={classes.Canvas}
-          ref="canvas"
+          ref={this.canvas}
           width={240}
           height={400}
         />
