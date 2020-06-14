@@ -32,11 +32,7 @@ const controls = (props) => {
       >
         <i className="fas fa-chevron-right" style={{ color: "#fff" }}></i>
       </button>
-      <button
-        className={classes.Button}
-        style={{ width: "200px", borderRadius: "5%" }}
-        onClick={props.clickSpacebar}
-      >
+      <button className={classes.ButtonSpacebar} onClick={props.clickSpacebar}>
         New Game
       </button>
     </div>

@@ -26,3 +26,38 @@
   outline: none;
   background-color: #454545;
 }
+
+.ButtonSpacebar {
+  color: #fff;
+  top: 0;
+  height: 50px;
+  background-color: #000;
+  border-radius: 10%;
+  /* border-style: inset; */
+  margin: auto;
+  margin-bottom: 1%;
+  display: block;
+  border: 1px solid #fff;
+  box-shadow: 0 3px 0 0 #fff;
+  width: 200px;
+  border-radius: 5%;
+  margin-top: 1%;
+}
+
+.ButtonSpacebar:focus {
+  outline: none;
+}
+
+.ButtonSpacebar:active {
+  outline: none;
+  background-color: #454545;
+}
+
+@media (max-width: 700px) {
+  .ButtonSpacebar {
+    margin-top: 5%;
+  }
+  .Button {
+    margin-top: 3%;
+  }
+}
