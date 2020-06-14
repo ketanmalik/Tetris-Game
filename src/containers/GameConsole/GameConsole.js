@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Controls from "../../components/Controls/Controls";
 import classes from "./GameConsole.module.css";
 
 let dropCounter = 0;
@@ -148,6 +149,9 @@ class GameConsole extends Component {
       this.canvas.current.width,
       this.canvas.current.height
     );
+    context.beginPath();
+    context.arc(100, 75, 50, 0, 2 * Math.PI);
+    context.stroke();
     this.drawMatrix([...this.state.arena], { x: 0, y: 0 });
     this.drawMatrix(this.state.player.matrix, this.state.player.pos);
   };
