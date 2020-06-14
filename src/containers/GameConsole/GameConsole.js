@@ -5,6 +5,7 @@ import classes from "./GameConsole.module.css";
 let dropCounter = 0;
 let dropInterval = 1000;
 let lastTime = 0;
+const pieces = "ILJOTSZ";
 const colors = [
   null,
   "#FF0D72",
@@ -44,12 +45,12 @@ class GameConsole extends Component {
       }
 
       const row = arena.splice(y, 1)[0].fill(0);
+      console.log(row);
       arena.unshift(row);
       ++y;
 
       player.score += rowCount * 10;
       rowCount *= 2;
-      console.log(player);
       this.setState({ arena: arena, player: player });
     }
   };
@@ -170,6 +171,9 @@ class GameConsole extends Component {
 
   keyPressHandler = (event) => {
     switch (event.keyCode) {
+      case 32:
+        this.newGameHandler();
+        break;
       case 37:
         this.playerMoveHandler(-1);
         break;
@@ -198,6 +202,14 @@ class GameConsole extends Component {
     this.setState({ arena: arena, player: player });
   };
 
+  newGameHandler = () => {
+    this.playerResetHandler();
+    let player = { ...this.state.player };
+    player.score = 0;
+    const arena = this.createMatrix(12, 20);
+    this.setState({ arena: arena, player: player });
+  };
+
   playerDropHandler = () => {
     let player = { ...this.state.player, pos: { ...this.state.player.pos } };
     let arena = [...this.state.arena];
@@ -222,7 +234,6 @@ class GameConsole extends Component {
   playerResetHandler = () => {
     let player = { ...this.state.player, matrix: { ...this.state.matrix } };
     let arena = [...this.state.arena];
-    const pieces = "ILJOTSZ";
     player.matrix = this.createPiece(
       pieces[(pieces.length * Math.random()) | 0]
     );
@@ -295,6 +306,13 @@ class GameConsole extends Component {
           ref={this.canvas}
           width={240}
           height={400}
+        />
+        <Controls
+          clickSpacebar={() => this.keyPressHandler({ keyCode: 32 })}
+          clickLeft={() => this.keyPressHandler({ keyCode: 37 })}
+          clickUp={() => this.keyPressHandler({ keyCode: 38 })}
+          clickRight={() => this.keyPressHandler({ keyCode: 39 })}
+          clickDown={() => this.keyPressHandler({ keyCode: 40 })}
         />
       </div>
     );

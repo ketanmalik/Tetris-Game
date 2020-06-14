@@ -1,2 +1,28 @@
 .Controls {
+  margin-top: 2%;
+  color: #fff;
+}
+
+.Button {
+  color: #fff;
+  top: 0;
+  height: 50px;
+  width: 50px;
+  background-color: #000;
+  border-radius: 10%;
+  /* border-style: inset; */
+  margin: auto;
+  margin-bottom: 1%;
+  display: block;
+  border: 1px solid #fff;
+  box-shadow: 0 3px 0 0 #fff;
+}
+
+.Button:focus {
+  outline: none;
+}
+
+.Button:active {
+  outline: none;
+  background-color: #454545;
 }
