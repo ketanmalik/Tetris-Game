@@ -25,6 +25,8 @@ class GameConsole extends Component {
     this.state = {
       arena: [],
       context: null,
+      lastScore: 0,
+      stopGame: false,
       player: {
         matrix: [],
         pos: { x: 5, y: 5 },
@@ -205,9 +207,16 @@ class GameConsole extends Component {
   newGameHandler = () => {
     this.playerResetHandler();
     let player = { ...this.state.player };
+    let lastScore = 0;
     player.score = 0;
     const arena = this.createMatrix(12, 20);
-    this.setState({ arena: arena, player: player });
+    let stopGame = false;
+    this.setState({
+      arena: arena,
+      player: player,
+      stopGame: stopGame,
+      lastScore: lastScore,
+    });
   };
 
   playerDropHandler = () => {
@@ -234,6 +243,8 @@ class GameConsole extends Component {
   playerResetHandler = () => {
     let player = { ...this.state.player, matrix: { ...this.state.matrix } };
     let arena = [...this.state.arena];
+    let stopGame = this.state.stopGame;
+    let lastScore = this.state.lastScore;
     player.matrix = this.createPiece(
       pieces[(pieces.length * Math.random()) | 0]
     );
@@ -242,9 +253,16 @@ class GameConsole extends Component {
       ((arena[0].length / 2) | 0) - ((player.matrix[0].length / 2) | 0);
     if (this.collide(arena, player)) {
       arena.forEach((row) => row.fill(0));
+      lastScore = player.score;
       player.score = 0;
+      stopGame = true;
     }
-    this.setState({ arena: arena, player: player });
+    this.setState({
+      arena: arena,
+      player: player,
+      stopGame: stopGame,
+      lastScore: lastScore,
+    });
   };
 
   playerRotateHandler = () => {
@@ -280,6 +298,20 @@ class GameConsole extends Component {
     matrix.forEach((row) => row.reverse());
   };
 
+  stopGameHandler = () => {
+    const context = this.state.context;
+    context.fillStyle = "#000";
+    context.fillRect(
+      0,
+      0,
+      this.canvas.current.width,
+      this.canvas.current.height
+    );
+    context.fillStyle = "#fff";
+    context.font = "bold 1.5px Courier";
+    context.fillText("Game Over!", 1.5, 10);
+  };
+
   update = (time = 0) => {
     const deltaTime = time - lastTime;
     dropCounter += deltaTime;
@@ -288,7 +320,8 @@ class GameConsole extends Component {
       dropCounter = 0;
     }
     lastTime = time;
-    this.draw();
+    if (!this.state.stopGame) this.draw();
+    else this.stopGameHandler();
     requestAnimationFrame(this.update);
   };
 
@@ -299,8 +332,13 @@ class GameConsole extends Component {
 
   render() {
     return (
-      <div className={classes.GameConsoleWrapper}>
-        <h4>Score&nbsp;&nbsp;{this.state.player.score}</h4>
+      <div>
+        <h4>
+          Score&nbsp;&nbsp;
+          {this.state.lastScore > 0
+            ? this.state.lastScore
+            : this.state.player.score}
+        </h4>
         <canvas
           className={classes.Canvas}
           ref={this.canvas}
