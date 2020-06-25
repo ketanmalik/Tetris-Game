@@ -26,7 +26,7 @@ class GameConsole extends Component {
       arena: [],
       context: null,
       lastScore: 0,
-      stopGame: false,
+      stopGame: true,
       player: {
         matrix: [],
         pos: { x: 5, y: 5 },
@@ -309,7 +309,7 @@ class GameConsole extends Component {
     );
     context.fillStyle = "#fff";
     context.font = "bold 1.5px Courier";
-    context.fillText("Game Over!", 1.5, 10);
+    context.fillText("Game Over!", 1.5, 9);
   };
 
   update = (time = 0) => {
